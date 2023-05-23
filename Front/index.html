@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+</head>
+
+<body>
+    <h1>Books</h1>
+    <div id="Books"></div>
+    <a href="about.html">About</a><br>
+    Author: <input id="author"><br>
+    Name: <input id="book_name"><br>
+    Year: <input id="book_year"><br>
+    Type: <input id="book_type"><br>
+    <button onclick="newBook()">Add New Book</button>
+    <script>
+        const MY_SERVER = 'http://127.0.0.1:5000';
+        const newBook = async () => {
+            data = {
+                book_author: author.value,
+                book_name: book_name.value,
+                book_year: book_year.value,
+                book_type: book_type.value
+            };
+            books = await axios.post(MY_SERVER + '/new', data);
+            loadData();
+        };
+
+        const delBook = async (id) => {
+            books = await axios.delete(MY_SERVER + `/del/${id}`);
+            loadData();
+        };
+
+        const updBook = async (id) => {
+            console.log(id);
+            data = {
+                book_author: author.value,
+                book_name: book_name.value,
+                book_year: book_year.value,
+                book_type: book_type.value
+            };
+            books = await axios.put(MY_SERVER + `/upd/${id}`, data);
+            loadData();
+        };
+
+        const loadData = async () => {
+            books = await axios.get(MY_SERVER);
+            // console.log(books.data);
+            Books.innerHTML = books.data
+                .map((book) => `<div>
+                    <button onClick='delBook(${book.id})'>Delete ${book.id}</button>
+                    <button onClick='updBook(${book.id})'>Update ${book.id}</button>
+                    ${book.book_author},
+                    ${book.book_name},
+                    ${book.book_year},
+                    ${book.book_type}
+                </div>`)
+                .join('');
+        };
+
+        loadData();
+    </script>
+</body>
+
+</html>
