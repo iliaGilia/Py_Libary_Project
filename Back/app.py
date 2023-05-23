@@ -12,11 +12,12 @@ db = SQLAlchemy(app)
 
 # Model
 class Book(db.Model):
-    id = db.Column('book_id', db.Integer, primary_key=True)
+    id = db.Column('id', db.Integer, primary_key=True)  # Modified column name
     book_name = db.Column(db.String(100))
     book_author = db.Column(db.String(50))
     book_year = db.Column(db.String(10))
     book_type = db.Column(db.String(200))
+    loans = db.relationship('Loan', backref='book', cascade='all, delete')
 
     def __init__(self, book_name, book_author, book_year, book_type):
         self.book_name = book_name
@@ -33,21 +34,75 @@ class Book(db.Model):
             'book_type': self.book_type
         }
 
-@app.route("/")
-def hello_world():
+class Customer(db.Model):
+    id = db.Column('id', db.Integer, primary_key=True)  # Added primary key
+    cust_name = db.Column(db.String(100))
+    cust_city = db.Column(db.String(50))
+    cust_age = db.Column(db.Integer)
+    loans = db.relationship('Loan', backref='customer', cascade='all, delete')
+
+    def __init__(self, cust_name, cust_city, cust_age):
+        self.cust_name = cust_name
+        self.cust_city = cust_city
+        self.cust_age = cust_age
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'cust_name': self.cust_name,
+            'cust_city': self.cust_city,
+            'cust_age': self.cust_age
+        }
+
+class Loan(db.Model):
+    id = db.Column('id', db.Integer, primary_key=True)
+    cust_id = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=False)
+    book_id = db.Column(db.Integer, db.ForeignKey('book.id'), nullable=False)
+    loanDate = db.Column(db.String(20))
+    returnDate = db.Column(db.String(20))
+
+    def __init__(self, cust_id, book_id, loanDate, returnDate):
+        self.cust_id = cust_id
+        self.book_id = book_id
+        self.loanDate = loanDate
+        self.returnDate = returnDate
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'cust_id': self.cust_id,
+            'book_id': self.book_id,
+            'loanDate': self.loanDate,
+            'returnDate': self.returnDate
+        }
+
+@app.route("/books", methods=['GET'])
+def get_books():
     books_list = [book.to_dict() for book in Book.query.all()]
     json_data = json.dumps(books_list)
     return json_data
 
-@app.route("/del/<id>", methods=['DELETE'])
+@app.route("/customers")
+def get_customers():
+    customers_list = [customer.to_dict() for customer in Customer.query.all()]
+    json_data = json.dumps(customers_list)
+    return json_data
+
+@app.route("/books/del/<id>", methods=['DELETE'])
 def del_book(id=-1):
-    book = db.get_or_404(Book, id)
+    book = Book.query.get_or_404(id)
     db.session.delete(book)
     db.session.commit()
     return {"delete": "success"}
 
+@app.route("/customers/del/<id>", methods=['DELETE'])
+def del_customer(id=-1):
+    customer = Customer.query.get_or_404(id)
+    db.session.delete(customer)
+    db.session.commit()
+    return {"delete": "success"}
 
-@app.route("/upd/<id>", methods=['PUT'])
+@app.route("/books/upd/<id>", methods=['PUT'])
 def upd_book(id=-1):
     book = Book.query.get(id)
     data = request.get_json()
@@ -58,9 +113,18 @@ def upd_book(id=-1):
     db.session.commit()
     return {"update": "success"}
 
+@app.route("/customers/upd/<id>", methods=['PUT'])
+def upd_customer(id=-1):
+    customer = Customer.query.get(id)
+    data = request.get_json()
+    customer.cust_name = data['cust_name']
+    customer.cust_city = data['cust_city']
+    customer.cust_age = data['cust_age']
+    db.session.commit()
+    return {"update": "success"}
 
-@app.route('/new', methods=['POST'])
-def new():
+@app.route('/books/new', methods=['POST'])
+def new_book():
     data = request.get_json()
     book_name = data['book_name']
     book_author = data['book_author']
@@ -70,7 +134,20 @@ def new():
     new_book = Book(book_name, book_author, book_year, book_type)
     db.session.add(new_book)
     db.session.commit()
-    return "A new record was created."
+    return "A new book record was created."
+
+
+@app.route('/customers/new', methods=['POST'])
+def new_customer():
+    data = request.get_json()
+    cust_name = data['cust_name']
+    cust_city = data['cust_city']
+    cust_age = data['cust_age']
+
+    new_customer = Customer(cust_name, cust_city, cust_age)
+    db.session.add(new_customer)
+    db.session.commit()
+    return "A new customer record was created."
 
 if __name__ == "__main__":
     with app.app_context():

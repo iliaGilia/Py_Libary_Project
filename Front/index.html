@@ -18,6 +18,13 @@
     Year: <input id="book_year"><br>
     Type: <input id="book_type"><br>
     <button onclick="newBook()">Add New Book</button>
+    <h1>Customers</h1>
+    <div id="Books"></div>
+    <a href="about.html">About</a><br>
+    Name: <input id="cust_name"><br>
+    City: <input id="cust_city"><br>
+    Age: <input id="cust_age"><br>
+    <button onclick="newCust()">Add New Book</button>
     <script>
         const MY_SERVER = 'http://127.0.0.1:5000';
         const newBook = async () => {
@@ -49,21 +56,60 @@
         };
 
         const loadData = async () => {
-            books = await axios.get(MY_SERVER);
-            // console.log(books.data);
-            Books.innerHTML = books.data
-                .map((book) => `<div>
-                    <button onClick='delBook(${book.id})'>Delete ${book.id}</button>
-                    <button onClick='updBook(${book.id})'>Update ${book.id}</button>
-                    ${book.book_author},
-                    ${book.book_name},
-                    ${book.book_year},
-                    ${book.book_type}
-                </div>`)
-                .join('');
-        };
+    const booksResponse = await axios.get(MY_SERVER + '/books');
+    const customersResponse = await axios.get(MY_SERVER + '/customers');
+    const booksData = booksResponse.data;
+    const customersData = customersResponse.data;
 
-        loadData();
+    Books.innerHTML = booksData
+        .map((book) => `<div>
+            <button onClick='delBook(${book.id})'>Delete ${book.id}</button>
+            <button onClick='updBook(${book.id})'>Update ${book.id}</button>
+            ${book.book_author},
+            ${book.book_name},
+            ${book.book_year},
+            ${book.book_type}
+        </div>`)
+        .join('');
+
+    Customers.innerHTML = customersData
+        .map((customer) => `<div>
+            <button onClick='delCustomer(${customer.id})'>Delete ${customer.id}</button>
+            <button onClick='updCustomer(${customer.id})'>Update ${customer.id}</button>
+            ${customer.cust_name},
+            ${customer.cust_city},
+            ${customer.cust_age}
+        </div>`)
+        .join('');
+};
+
+
+        const newCustomer = async () => {
+    data = {
+        cust_name: name.value,
+        cust_city: city.value,
+        cust_age: age.value
+    };
+    customers = await axios.post(MY_SERVER + '/new_customer', data);
+    loadData();
+};
+
+const delCustomer = async (id) => {
+    customers = await axios.delete(MY_SERVER + `/del_customer/${id}`);
+    loadData();
+};
+
+const updCustomer = async (id) => {
+    console.log(id);
+    data = {
+        cust_name: name.value,
+        cust_city: city.value,
+        cust_age: age.value
+    };
+    customers = await axios.put(MY_SERVER + `/upd_customer/${id}`, data);
+    loadData();
+};
+
     </script>
 </body>
 
