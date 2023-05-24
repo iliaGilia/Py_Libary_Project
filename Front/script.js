@@ -200,7 +200,27 @@ const updateBook = async (id) => {
     loadData();
   };
   
-  
+  const showBooks = () => {
+    const dataDisplayDiv = document.getElementById('DataDisplay');
+    dataDisplayDiv.innerHTML = '';
+    const booksDiv = document.getElementById('Books');
+    dataDisplayDiv.innerHTML = booksDiv.innerHTML;
+};
+
+const showCustomers = () => {
+    const dataDisplayDiv = document.getElementById('DataDisplay');
+    dataDisplayDiv.innerHTML = '';
+    const customersDiv = document.getElementById('Customers');
+    dataDisplayDiv.innerHTML = customersDiv.innerHTML;
+};
+
+const showLoans = () => {
+    const dataDisplayDiv = document.getElementById('DataDisplay');
+    dataDisplayDiv.innerHTML = '';
+    const loansDiv = document.getElementById('Loans');
+    dataDisplayDiv.innerHTML = loansDiv.innerHTML; 
+};
+
 const updateData = () => {
   loadData();
 };

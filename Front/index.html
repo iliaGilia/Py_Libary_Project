@@ -11,44 +11,51 @@
 
 <body>
     <h1>Books</h1>
-<div id="Books"></div>
+    <div id="Books"></div>
 
-<h2>Add New Book</h2>
-Author: <input id="author"><br>
-Name: <input id="book_name"><br>
-Year: <input id="book_year"><br>
-Book Type:
-<select id="book_type">
-  <option value="1">Type 1</option>
-  <option value="2">Type 2</option>
-  <option value="3">Type 3</option>
-</select><br>
-<button onclick="newBook()">Add New Book</button>
+    <h2>Add New Book</h2>
+    Author: <input id="author"><br>
+    Name: <input id="book_name"><br>
+    Year: <input id="book_year"><br>
+    Book Type:
+    <select id="book_type">
+        <option value="1">Type 1</option>
+        <option value="2">Type 2</option>
+        <option value="3">Type 3</option>
+    </select><br>
+    <button onclick="newBook()">Add New Book</button>
 
-<h1>Customers</h1>
-<div id="Customers"></div>
+    <h1>Customers</h1>
+    <div id="Customers"></div>
 
-<h2>Add New Customer</h2>
-Name: <input id="cust_name"><br>
-City: <input id="cust_city"><br>
-Age: <input id="cust_age"><br>
-<button onclick="newCustomer()">Add New Customer</button>
+    <h2>Add New Customer</h2>
+    Name: <input id="cust_name"><br>
+    City: <input id="cust_city"><br>
+    Age: <input id="cust_age"><br>
+    <button onclick="newCustomer()">Add New Customer</button>
 
-<h1>Loans</h1>
-<div id="Loans"></div>
+    <h1>Loans</h1>
+    <div id="Loans"></div>
 
-<h2>Add New Loan</h2>
-Customer ID: <input id="loan_cust_id"><br>
-Book ID: <input id="loan_book_id"><br>
-Book Type:
-<select id="loan_book_type">
-  <option value="1">Type 1</option>
-  <option value="2">Type 2</option>
-  <option value="3">Type 3</option>
-</select><br>
-<button onclick="newLoan()">Add New Loan</button>
+    <h2>Add New Loan</h2>
+    Customer ID: <input id="loan_cust_id"><br>
+    Book ID: <input id="loan_book_id"><br>
+    Book Type:
+    <select id="loan_book_type">
+        <option value="1">Type 1</option>
+        <option value="2">Type 2</option>
+        <option value="3">Type 3</option>
+    </select><br>
+    <button onclick="newLoan()">Add New Loan</button>
 
-<script src="script.js"></script>
+    <button onclick="showBooks()">Show Books Data</button>
+    <button onclick="showCustomers()">Show Customers Data</button>
+    <button onclick="showLoans()">Show Loans Data</button>
+
+    <div id="DataDisplay"></div>
+
+    <script src="script.js"></script>
+
 </body>
 
 </html>
