@@ -11,153 +11,44 @@
 
 <body>
     <h1>Books</h1>
-    <div id="Books"></div>
-    <h2>Add New Book</h2>
-    Author: <input id="author"><br>
-    Name: <input id="book_name"><br>
-    Year: <input id="book_year"><br>
-    Book Type: <select id="book_type">
-        <option value="1">Type 1</option>
-        <option value="2">Type 2</option>
-        <option value="3">Type 3</option>
-    </select><br>
-    <button onclick="newBook()">Add New Book</button>
+<div id="Books"></div>
 
-    <h1>Customers</h1>
-    <div id="Customers"></div>
-    <h2>Add New Customer</h2>
-    Name: <input id="cust_name"><br>
-    City: <input id="cust_city"><br>
-    Age: <input id="cust_age"><br>
-    <button onclick="newCustomer()">Add New Customer</button>
+<h2>Add New Book</h2>
+Author: <input id="author"><br>
+Name: <input id="book_name"><br>
+Year: <input id="book_year"><br>
+Book Type:
+<select id="book_type">
+  <option value="1">Type 1</option>
+  <option value="2">Type 2</option>
+  <option value="3">Type 3</option>
+</select><br>
+<button onclick="newBook()">Add New Book</button>
 
-    <h1>Loans</h1>
-    <div id="Loans"></div>
-    <h2>Add New Loan</h2>
-    Customer ID: <input id="loan_cust_id"><br>
-    Book ID: <input id="loan_book_id"><br>
-    Book Type:
-    <select id="loan_book_type">
-        <option value="1">Type 1</option>
-        <option value="2">Type 2</option>
-        <option value="3">Type 3</option>
-    </select><br>
-    <button onclick="newLoan()">Add New Loan</button>
+<h1>Customers</h1>
+<div id="Customers"></div>
 
-    <script>
-        const MY_SERVER = "http://127.0.0.1:5000"; 
+<h2>Add New Customer</h2>
+Name: <input id="cust_name"><br>
+City: <input id="cust_city"><br>
+Age: <input id="cust_age"><br>
+<button onclick="newCustomer()">Add New Customer</button>
 
-        const loadData = async () => {
-            const booksResponse = await axios.get(`${MY_SERVER}/books`);
-            const customersResponse = await axios.get(`${MY_SERVER}/customers`);
-            const loansResponse = await axios.get(`${MY_SERVER}/loans`);
+<h1>Loans</h1>
+<div id="Loans"></div>
 
-            const booksData = booksResponse.data;
-            const customersData = customersResponse.data;
-            const loansData = loansResponse.data;
+<h2>Add New Loan</h2>
+Customer ID: <input id="loan_cust_id"><br>
+Book ID: <input id="loan_book_id"><br>
+Book Type:
+<select id="loan_book_type">
+  <option value="1">Type 1</option>
+  <option value="2">Type 2</option>
+  <option value="3">Type 3</option>
+</select><br>
+<button onclick="newLoan()">Add New Loan</button>
 
-            // Display books
-            const booksDiv = document.getElementById('Books');
-            booksDiv.innerHTML = '';
-            booksData.forEach(book => {
-                const bookDiv = document.createElement('div');
-                bookDiv.innerHTML = `
-            <p>Book ID: ${book.id}, Author: ${book.book_author}, Name: ${book.book_name}, Year: ${book.book_year}, Type: ${book.book_type}</p>
-            <button onclick="delBook(${book.id})">Delete</button>
-        `;
-                booksDiv.appendChild(bookDiv);
-            });
-
-            // Display customers
-            const customersDiv = document.getElementById('Customers');
-            customersDiv.innerHTML = '';
-            customersData.forEach(customer => {
-                const customerDiv = document.createElement('div');
-                customerDiv.innerHTML = `
-            <p>Customer ID: ${customer.id}, Name: ${customer.cust_name}, City: ${customer.cust_city}, Age: ${customer.cust_age}</p>
-            <button onclick="delCustomer(${customer.id})">Delete</button>
-        `;
-                customersDiv.appendChild(customerDiv);
-            });
-
-            // Display loans
-            const loansDiv = document.getElementById('Loans');
-            loansDiv.innerHTML = '';
-            loansData.forEach(loan => {
-                const loanDiv = document.createElement('div');
-                loanDiv.innerHTML = `
-            <p>Loan ID: ${loan.id}, Customer ID: ${loan.cust_id}, Book ID: ${loan.book_id}, Loan Date: ${loan.loanDate}, Return Date: ${loan.returnDate}</p>
-            <button onclick="delLoan(${loan.id})">Delete</button>
-        `;
-                loansDiv.appendChild(loanDiv);
-            });
-        };
-
-        const newBook = async () => {
-            const author = document.getElementById('author').value;
-            const bookName = document.getElementById('book_name').value;
-            const bookYear = document.getElementById('book_year').value;
-            const bookType = document.getElementById('book_type').value;
-
-            const newBookData = {
-                book_author: author,
-                book_name: bookName,
-                book_year: bookYear,
-                book_type: bookType
-            };
-
-            await axios.post(`${MY_SERVER}/books/new`, newBookData);
-            loadData();
-        };
-
-        const newCustomer = async () => {
-            const custName = document.getElementById('cust_name').value;
-            const custCity = document.getElementById('cust_city').value;
-            const custAge = document.getElementById('cust_age').value;
-
-            const newCustomerData = {
-                cust_name: custName,
-                cust_city: custCity,
-                cust_age: custAge
-            };
-
-            await axios.post(`${MY_SERVER}/customers/new`, newCustomerData);
-            loadData();
-        };
-
-        const newLoan = async () => {
-            const custId = document.getElementById('loan_cust_id').value;
-            const bookId = document.getElementById('loan_book_id').value;
-            const bookType = document.getElementById('loan_book_type').value;
-
-            const newLoanData = {
-                cust_id: custId,
-                book_id: bookId,
-                book_type: bookType
-            };
-
-            await axios.post(`${MY_SERVER}/loans/new`, newLoanData);
-            loadData();
-        };
-
-        const delBook = async (id) => {
-            await axios.delete(`${MY_SERVER}/books/del/${id}`);
-            loadData();
-        };
-
-        const delCustomer = async (id) => {
-            await axios.delete(`${MY_SERVER}/customers/del/${id}`);
-            loadData();
-        };
-
-        const delLoan = async (id) => {
-            await axios.delete(`${MY_SERVER}/loans/del/${id}`);
-            loadData();
-        };
-
-        // Call the loadData function to fetch and display initial data
-        loadData();
-    </script>
+<script src="script.js"></script>
 </body>
 
 </html>
