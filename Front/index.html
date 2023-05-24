@@ -5,111 +5,154 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Library Management System</title>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
 </head>
 
 <body>
     <h1>Books</h1>
     <div id="Books"></div>
-    <a href="about.html">About</a><br>
+    <h2>Add New Book</h2>
     Author: <input id="author"><br>
     Name: <input id="book_name"><br>
     Year: <input id="book_year"><br>
     Type: <input id="book_type"><br>
     <button onclick="newBook()">Add New Book</button>
+
     <h1>Customers</h1>
-    <div id="Books"></div>
-    <a href="about.html">About</a><br>
+    <div id="Customers"></div>
+    <h2>Add New Customer</h2>
     Name: <input id="cust_name"><br>
     City: <input id="cust_city"><br>
     Age: <input id="cust_age"><br>
-    <button onclick="newCust()">Add New Book</button>
+    <button onclick="newCustomer()">Add New Customer</button>
+
+    <h1>Loans</h1>
+    <div id="Loans"></div>
+    <h2>Add New Loan</h2>
+    Customer ID: <input id="loan_cust_id"><br>
+    Book ID: <input id="loan_book_id"><br>
+    Book Type:
+    <select id="loan_book_type">
+        <option value="1">Type 1</option>
+        <option value="2">Type 2</option>
+        <option value="3">Type 3</option>
+    </select><br>
+    <button onclick="newLoan()">Add New Loan</button>
+
     <script>
-        const MY_SERVER = 'http://127.0.0.1:5000';
+        const MY_SERVER = "http://127.0.0.1:5000"; 
+
+        const loadData = async () => {
+            const booksResponse = await axios.get(`${MY_SERVER}/books`);
+            const customersResponse = await axios.get(`${MY_SERVER}/customers`);
+            const loansResponse = await axios.get(`${MY_SERVER}/loans`);
+
+            const booksData = booksResponse.data;
+            const customersData = customersResponse.data;
+            const loansData = loansResponse.data;
+
+            // Display books
+            const booksDiv = document.getElementById('Books');
+            booksDiv.innerHTML = '';
+            booksData.forEach(book => {
+                const bookDiv = document.createElement('div');
+                bookDiv.innerHTML = `
+            <p>Book ID: ${book.id}, Author: ${book.book_author}, Name: ${book.book_name}, Year: ${book.book_year}, Type: ${book.book_type}</p>
+            <button onclick="delBook(${book.id})">Delete</button>
+        `;
+                booksDiv.appendChild(bookDiv);
+            });
+
+            // Display customers
+            const customersDiv = document.getElementById('Customers');
+            customersDiv.innerHTML = '';
+            customersData.forEach(customer => {
+                const customerDiv = document.createElement('div');
+                customerDiv.innerHTML = `
+            <p>Customer ID: ${customer.id}, Name: ${customer.cust_name}, City: ${customer.cust_city}, Age: ${customer.cust_age}</p>
+            <button onclick="delCustomer(${customer.id})">Delete</button>
+        `;
+                customersDiv.appendChild(customerDiv);
+            });
+
+            // Display loans
+            const loansDiv = document.getElementById('Loans');
+            loansDiv.innerHTML = '';
+            loansData.forEach(loan => {
+                const loanDiv = document.createElement('div');
+                loanDiv.innerHTML = `
+            <p>Loan ID: ${loan.id}, Customer ID: ${loan.cust_id}, Book ID: ${loan.book_id}, Loan Date: ${loan.loanDate}, Return Date: ${loan.returnDate}</p>
+            <button onclick="delLoan(${loan.id})">Delete</button>
+        `;
+                loansDiv.appendChild(loanDiv);
+            });
+        };
+
         const newBook = async () => {
-            data = {
-                book_author: author.value,
-                book_name: book_name.value,
-                book_year: book_year.value,
-                book_type: book_type.value
+            const author = document.getElementById('author').value;
+            const bookName = document.getElementById('book_name').value;
+            const bookYear = document.getElementById('book_year').value;
+            const bookType = document.getElementById('book_type').value;
+
+            const newBookData = {
+                book_author: author,
+                book_name: bookName,
+                book_year: bookYear,
+                book_type: bookType
             };
-            books = await axios.post(MY_SERVER + '/new', data);
+
+            await axios.post(`${MY_SERVER}/books/new`, newBookData);
+            loadData();
+        };
+
+        const newCustomer = async () => {
+            const custName = document.getElementById('cust_name').value;
+            const custCity = document.getElementById('cust_city').value;
+            const custAge = document.getElementById('cust_age').value;
+
+            const newCustomerData = {
+                cust_name: custName,
+                cust_city: custCity,
+                cust_age: custAge
+            };
+
+            await axios.post(`${MY_SERVER}/customers/new`, newCustomerData);
+            loadData();
+        };
+
+        const newLoan = async () => {
+            const custId = document.getElementById('loan_cust_id').value;
+            const bookId = document.getElementById('loan_book_id').value;
+            const bookType = document.getElementById('loan_book_type').value;
+
+            const newLoanData = {
+                cust_id: custId,
+                book_id: bookId,
+                book_type: bookType
+            };
+
+            await axios.post(`${MY_SERVER}/loans/new`, newLoanData);
             loadData();
         };
 
         const delBook = async (id) => {
-            books = await axios.delete(MY_SERVER + `/del/${id}`);
+            await axios.delete(`${MY_SERVER}/books/del/${id}`);
             loadData();
         };
 
-        const updBook = async (id) => {
-            console.log(id);
-            data = {
-                book_author: author.value,
-                book_name: book_name.value,
-                book_year: book_year.value,
-                book_type: book_type.value
-            };
-            books = await axios.put(MY_SERVER + `/upd/${id}`, data);
+        const delCustomer = async (id) => {
+            await axios.delete(`${MY_SERVER}/customers/del/${id}`);
             loadData();
         };
 
-        const loadData = async () => {
-    const booksResponse = await axios.get(MY_SERVER + '/books');
-    const customersResponse = await axios.get(MY_SERVER + '/customers');
-    const booksData = booksResponse.data;
-    const customersData = customersResponse.data;
+        const delLoan = async (id) => {
+            await axios.delete(`${MY_SERVER}/loans/del/${id}`);
+            loadData();
+        };
 
-    Books.innerHTML = booksData
-        .map((book) => `<div>
-            <button onClick='delBook(${book.id})'>Delete ${book.id}</button>
-            <button onClick='updBook(${book.id})'>Update ${book.id}</button>
-            ${book.book_author},
-            ${book.book_name},
-            ${book.book_year},
-            ${book.book_type}
-        </div>`)
-        .join('');
-
-    Customers.innerHTML = customersData
-        .map((customer) => `<div>
-            <button onClick='delCustomer(${customer.id})'>Delete ${customer.id}</button>
-            <button onClick='updCustomer(${customer.id})'>Update ${customer.id}</button>
-            ${customer.cust_name},
-            ${customer.cust_city},
-            ${customer.cust_age}
-        </div>`)
-        .join('');
-};
-
-
-        const newCustomer = async () => {
-    data = {
-        cust_name: name.value,
-        cust_city: city.value,
-        cust_age: age.value
-    };
-    customers = await axios.post(MY_SERVER + '/new_customer', data);
-    loadData();
-};
-
-const delCustomer = async (id) => {
-    customers = await axios.delete(MY_SERVER + `/del_customer/${id}`);
-    loadData();
-};
-
-const updCustomer = async (id) => {
-    console.log(id);
-    data = {
-        cust_name: name.value,
-        cust_city: city.value,
-        cust_age: age.value
-    };
-    customers = await axios.put(MY_SERVER + `/upd_customer/${id}`, data);
-    loadData();
-};
-
+        // Call the loadData function to fetch and display initial data
+        loadData();
     </script>
 </body>
 
