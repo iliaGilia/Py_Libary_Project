@@ -1,5 +1,5 @@
 import json
-from flask import Flask, request
+from flask import Flask, request, render_template
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
@@ -76,6 +76,10 @@ class Loan(db.Model):
             'loanDate': self.loanDate,
             'returnDate': self.returnDate
         }
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 @app.route("/books", methods=['GET'])
 def get_books():
