@@ -7,52 +7,88 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Library Management System</title>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+    <style>
+        .container {
+            display: flex;
+        }
+
+        .left-section {
+            flex: 1;
+        }
+
+        .right-section {
+            flex: 1;
+        }
+
+        .show-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-right:24%;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Books</h1>
-    <div id="Books"></div>
+    <div class="show-buttons">
+        <button onclick="showBooks()">Show Books Data</button>
+        <button onclick="showCustomers()">Show Customers Data</button>
+        <button onclick="showLoans()">Show Loans Data</button>
+    </div>
 
-    <h2>Add New Book</h2>
-    Author: <input id="author"><br>
-    Name: <input id="book_name"><br>
-    Year: <input id="book_year"><br>
-    Book Type:
-    <select id="book_type">
-        <option value="1">Type 1</option>
-        <option value="2">Type 2</option>
-        <option value="3">Type 3</option>
-    </select><br>
-    <button onclick="newBook()">Add New Book</button>
+    <div class="container">
+        <div class="left-section">
+            <h1>Books</h1>
 
-    <h1>Customers</h1>
-    <div id="Customers"></div>
+            <h2>Add New Book</h2>
+            Author: <input id="author"><br>
+            Name: <input id="book_name"><br>
+            Year: <input id="book_year"><br>
+            Book Type:
+            <select id="book_type">
+                <option value="1">Type 1</option>
+                <option value="2">Type 2</option>
+                <option value="3">Type 3</option>
+            </select><br>
+            <button onclick="newBook()">Add New Book</button>
 
-    <h2>Add New Customer</h2>
-    Name: <input id="cust_name"><br>
-    City: <input id="cust_city"><br>
-    Age: <input id="cust_age"><br>
-    <button onclick="newCustomer()">Add New Customer</button>
+            <h1>Customers</h1>
 
-    <h1>Loans</h1>
-    <div id="Loans"></div>
+            <h2>Add New Customer</h2>
+            Name: <input id="cust_name"><br>
+            City: <input id="cust_city"><br>
+            Age: <input id="cust_age"><br>
+            <button onclick="newCustomer()">Add New Customer</button>
 
-    <h2>Add New Loan</h2>
-    Customer ID: <input id="loan_cust_id"><br>
-    Book ID: <input id="loan_book_id"><br>
-    Book Type:
-    <select id="loan_book_type">
-        <option value="1">Type 1</option>
-        <option value="2">Type 2</option>
-        <option value="3">Type 3</option>
-    </select><br>
-    <button onclick="newLoan()">Add New Loan</button>
+            <h1>Loans</h1>
 
-    <button onclick="showBooks()">Show Books Data</button>
-    <button onclick="showCustomers()">Show Customers Data</button>
-    <button onclick="showLoans()">Show Loans Data</button>
+            <h2>Loan a new book</h2>
+            Customer ID: <input id="loan_cust_id"><br>
+            Book ID: <input id="loan_book_id"><br>
+            Book Type:
+            <select id="loan_book_type">
+                <option value="1">Type 1</option>
+                <option value="2">Type 2</option>
+                <option value="3">Type 3</option>
+            </select><br>
+            <button onclick="newLoan()">Add New Loan</button>
+        </div>
 
-    <div id="DataDisplay"></div>
+        <div class="right-section">
+            <div id="DataDisplay"></div>
+
+            <div id="BooksSection">
+                <div id="Books" style="display: none;"></div>
+            </div>
+
+            <div id="CustomersSection">
+                <div id="Customers" style="display: none;"></div>
+            </div>
+
+            <div id="LoansSection">
+                <div id="Loans" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 

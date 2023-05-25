@@ -221,6 +221,23 @@ const showLoans = () => {
     dataDisplayDiv.innerHTML = loansDiv.innerHTML; 
 };
 
+const showSection = (section) => {
+  const dataDisplayDiv = document.getElementById('DataDisplay');
+  dataDisplayDiv.innerHTML = '';
+
+  const booksSection = document.getElementById('BooksSection');
+  const customersSection = document.getElementById('CustomersSection');
+  const loansSection = document.getElementById('LoansSection');
+
+  if (section === 'Books') {
+    dataDisplayDiv.innerHTML = booksSection.innerHTML;
+  } else if (section === 'Customers') {
+    dataDisplayDiv.innerHTML = customersSection.innerHTML;
+  } else if (section === 'Loans') {
+    dataDisplayDiv.innerHTML = loansSection.innerHTML;
+  }
+};
+
 const updateData = () => {
   loadData();
 };
