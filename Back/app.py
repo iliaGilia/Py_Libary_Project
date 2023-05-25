@@ -185,10 +185,18 @@ def new_loan():
     book_id = data['book_id']
     book_type = data['book_type']
 
-    # Set loanDate to today's date
-    loanDate = datetime.now().strftime('%Y-%m-%d')
+    # Check if the book exists
+    book = Book.query.get(book_id)
+    if book is None:
+        return {'error': 'Invalid book ID'}, 400
 
-    # Set returnDate based on book_type
+    # Check if the customer exists
+    customer = Customer.query.get(cust_id)
+    if customer is None:
+        return {'error': 'Invalid customer ID'}, 400
+
+    # Perform loan creation
+    loanDate = datetime.now().strftime('%Y-%m-%d')
     if book_type == '1':
         returnDate = (datetime.now() + timedelta(days=2)).strftime('%Y-%m-%d')
     elif book_type == '2':
@@ -196,7 +204,7 @@ def new_loan():
     elif book_type == '3':
         returnDate = (datetime.now() + timedelta(days=10)).strftime('%Y-%m-%d')
     else:
-        return "Invalid book type."
+        return {'error': 'Invalid book type'}, 400
 
     new_loan = Loan(cust_id, book_id, loanDate, returnDate)
     db.session.add(new_loan)

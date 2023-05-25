@@ -75,7 +75,40 @@ const newBook = async () => {
   const author = document.getElementById('author').value;
   const bookName = document.getElementById('book_name').value;
   const bookYear = document.getElementById('book_year').value;
-  const bookType = document.getElementById('book_type').value;
+  const bookType = document.getElementById('book_type').value; 
+
+  // Validate book_author
+  if (author === '') {
+    alert('Author name cannot be empty.');
+    return;
+  }
+
+  if (!/^[A-Za-z]+$/.test(author)) {
+    alert('Author name should only contain letters.');
+    return;
+  }
+
+  // Validate book_name
+  if (bookName === '') {
+    alert('Book name cannot be empty.');
+    return;
+  }
+
+  if (!/^[A-Za-z]+$/.test(bookName)) {
+    alert('Book name should only contain letters.');
+    return;
+  }
+
+  // Validate book_year
+  if (bookYear === '') {
+    alert('Book year cannot be empty.');
+    return;
+  }
+
+  if (isNaN(bookYear) || bookYear.length >= 4) {
+    alert('Invalid book year. Year should be a 4-digit number.');
+    return;
+  }
 
   const newBookData = {
     book_author: author,
@@ -92,6 +125,39 @@ const newCustomer = async () => {
   const custName = document.getElementById('cust_name').value;
   const custCity = document.getElementById('cust_city').value;
   const custAge = document.getElementById('cust_age').value;
+
+  // Validate cust_name
+  if (custName === '') {
+    alert('Customer name cannot be empty.');
+    return;
+  }
+
+  if (!/^[A-Za-z]+$/.test(custName)) {
+    alert('Customer name should only contain letters.');
+    return;
+  }
+
+  // Validate cust_city
+  if (custCity === '') {
+    alert('Customer city cannot be empty.');
+    return;
+  }
+
+  if (!/^[A-Za-z]+$/.test(custCity)) {
+    alert('Customer city should only contain letters.');
+    return;
+  }
+
+  // Validate cust_age
+  if (custAge === '') {
+    alert('Customer age cannot be empty.');
+    return;
+  }
+
+  if (isNaN(custAge) || custAge < 0 || custAge >= 100) {
+    alert('Invalid customer age. Age should be a number less than 100.');
+    return;
+  }
 
   const newCustomerData = {
     cust_name: custName,
