@@ -172,7 +172,10 @@ const newCustomer = async () => {
 const newLoan = async () => {
   const custId = document.getElementById('loan_cust_id').value;
   const bookId = document.getElementById('loan_book_id').value;
-  const bookType = document.getElementById('loan_book_type').value;
+
+  // Fetch book data from the server
+  const bookResponse = await axios.get(`${MY_SERVER}/books/${bookId}`);
+  const bookType = bookResponse.data.book_type;
 
   const newLoanData = {
     cust_id: custId,

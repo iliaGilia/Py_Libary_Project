@@ -87,6 +87,14 @@ def get_books():
     json_data = json.dumps(books_list)
     return json_data
 
+@app.route("/books/<int:book_id>", methods=['GET'])
+def get_book(book_id):
+    book = Book.query.get(book_id)
+    if book is None:
+        return {'error': 'Book not found'}, 404
+
+    return book.to_dict()
+
 @app.route("/customers", methods=['GET'])
 def get_customers():
     customers_list = [customer.to_dict() for customer in Customer.query.all()]
@@ -183,7 +191,7 @@ def new_loan():
     data = request.get_json()
     cust_id = data['cust_id']
     book_id = data['book_id']
-    book_type = data['book_type']
+    book_type = str(data['book_type'])
 
     # Check if the book exists
     book = Book.query.get(book_id)
