@@ -65,7 +65,7 @@ const createLoanDiv = (loan) => {
   const loanDiv = document.createElement('div');
   loanDiv.innerHTML = `
     <p>Loan ID: ${loan.id}, Customer ID: ${loan.cust_id}, Book ID: ${loan.book_id}, Loan Date: ${loan.loanDate}, Return Date: ${loan.returnDate}</p>
-    <button onclick="deleteLoan(${loan.id})">Delete</button>
+    <button onclick="deleteLoan(${loan.id})">Return</button>
     <button onclick="updateLoan(${loan.id})">Update</button>
   `;
   return loanDiv;
