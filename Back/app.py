@@ -1,8 +1,9 @@
 import json
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
+from sqlalchemy import func
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///books.sqlite3'
@@ -218,6 +219,39 @@ def new_loan():
     db.session.add(new_loan)
     db.session.commit()
     return "A new loan record was created."
+
+@app.route('/books/search/<string:query>', methods=['GET'])
+def search_books(query):
+    # Convert the query to lowercase and add wildcards
+    search_query = f'%{query.lower()}%'
+    books_list = [book.to_dict() for book in Book.query.filter(func.lower(Book.book_name).like(search_query)).all()]
+    json_data = json.dumps(books_list)
+    return json_data
+
+@app.route("/customers/search/<string:query>", methods=['GET'])
+def search_customers(query):
+    # Convert the query to lowercase and add wildcards
+    search_query = f'%{query.lower()}%'
+    customers_list = [customer.to_dict() for customer in Customer.query.filter(func.lower(Customer.cust_name).like(search_query)).all()]
+    json_data = json.dumps(customers_list)
+    return json_data
+
+@app.route('/books-overdue', methods=['GET'])
+def get_books_overdue():
+    today = date.today().strftime('%Y-%m-%d')
+    overdue_books = db.session.query(Book, Loan.returnDate)\
+                    .join(Loan)\
+                    .filter(Loan.returnDate < today)\
+                    .all()
+
+    books_list = []
+    for book, returnDate in overdue_books:
+        book_dict = book.to_dict()
+        book_dict['returnDate'] = returnDate
+        books_list.append(book_dict)
+
+    json_data = json.dumps(books_list)
+    return json_data
 
 if __name__ == "__main__":
     with app.app_context():

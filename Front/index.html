@@ -30,6 +30,14 @@
             margin-right: 24%;
         }
 
+        #overdue-books-container {
+            position: absolute;
+            top: 80px;
+             right: 0;
+            width: 300px;
+            padding: 10px;
+        }
+
         /* Adjust footer styles */
         footer {
             background-color: #f8f9fa;
@@ -54,6 +62,9 @@
                 <li class="nav-item">
                     <button class="btn btn-primary mx-2" onclick="showLoans()">Show Loans Data</button>
                 </li>
+                <li class="nav-item">
+                    <button class="btn btn-primary mx-2" id="show-overdue-books-btn">Show Overdue Books</button>
+                  </li>
             </ul>
         </div>
     </nav>
@@ -107,6 +118,26 @@
         </div>
     </div>
 
+    <div id="BooksSection">
+        <h2>Search Books</h2>
+        <input type="text" id="searchBookInput" placeholder="Enter book name">
+        <button onclick="searchBooks()">Search</button>
+        <div id="bookSearchResults"></div>
+        <div id="Books" style="display: none;"></div>
+    </div>
+
+    <div id="CustomersSection">
+        <h2>Search Customers</h2>
+        <input type="text" id="searchCustomerInput" placeholder="Enter customer name">
+        <button onclick="searchCustomers()">Search</button>
+        <div id="customerSearchResults"></div>
+        <div id="Customers" style="display: none;"></div>
+      </div>
+
+    
+
+
+    
     <!-- Add Bootstrap JS and custom script -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
