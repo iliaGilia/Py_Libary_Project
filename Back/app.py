@@ -239,15 +239,18 @@ def search_customers(query):
 @app.route('/books-overdue', methods=['GET'])
 def get_books_overdue():
     today = date.today().strftime('%Y-%m-%d')
-    overdue_books = db.session.query(Book, Loan.returnDate)\
-                    .join(Loan)\
+    overdue_books = db.session.query(Book, Loan.returnDate, Loan.cust_id)\
+                    .join(Loan, Book.id == Loan.book_id)\
+                    .join(Customer, Loan.cust_id == Customer.id)\
                     .filter(Loan.returnDate < today)\
                     .all()
 
     books_list = []
-    for book, returnDate in overdue_books:
+    for book, returnDate, cust_id in overdue_books:
         book_dict = book.to_dict()
         book_dict['returnDate'] = returnDate
+        book_dict['cust_id'] = cust_id
+        book_dict['book_id'] = book.id    # add the book ID to the dictionary
         books_list.append(book_dict)
 
     json_data = json.dumps(books_list)

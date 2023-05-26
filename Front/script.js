@@ -421,6 +421,8 @@ function showOverdueBooks() {
         html += `<div class="book">
                     <h3>${book.book_name}</h3>
                     <p>Author: ${book.book_author}</p>
+                    <p>Book ID: ${book.book_id}</p>
+                    <p>Customer ID: ${book.cust_id}</p>
                     <p>Return Date: ${book.returnDate}</p>
                   </div>`;
       });
