@@ -60,6 +60,12 @@ def del_book(id=-1):
 @app.route("/customers/del/<id>", methods=['DELETE'])
 def del_customer(id=-1):
     customer = Customer.query.get_or_404(id)
+
+    # check if the customer has any loans
+    if customer.loans:
+        return {"error": "Cannot delete customer. They have books loaned."}, 400
+
+    # if the customer has no loans, delete them
     db.session.delete(customer)
     db.session.commit()
     return {"delete": "success"}
@@ -92,18 +98,6 @@ def upd_customer(id=-1):
     customer.cust_name = data['cust_name']
     customer.cust_city = data['cust_city']
     customer.cust_age = data['cust_age']
-    db.session.commit()
-    return {"update": "success"}
-
-# update a loan by its ID
-@app.route("/loans/upd/<id>", methods=['PUT'])
-def upd_loan(id=-1):
-    loan = Loan.query.get(id)
-    data = request.get_json()
-    loan.cust_id = data['cust_id']
-    loan.book_id = data['book_id']
-    loan.loanDate = data['loanDate']
-    loan.returnDate = data['returnDate']
     db.session.commit()
     return {"update": "success"}
 
@@ -153,7 +147,7 @@ def new_loan():
         return {'error': 'Invalid customer ID'}, 400
 
     # Check if the book is already loaned
-    loaned_book = Loan.query.filter_by(book_id=book_id).filter(Loan.returnDate >= datetime.now().strftime('%Y-%m-%d')).first()
+    loaned_book = Loan.query.filter_by(book_id=book_id).first()
     if loaned_book is not None:
         return {'error': 'The book is already loaned'}, 400
 

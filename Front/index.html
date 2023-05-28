@@ -8,6 +8,7 @@
     <title>Library Management System</title>
     <!-- Add Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
     <style>
         /* Adjust spacing */
@@ -72,6 +73,7 @@
     <div class="container">
         <div class="left-section">
             <h1>Books</h1>
+            <button id="toastButton">Show Toast</button>
             <!-- Add new book form -->
             <h2>Add New Book</h2>
             Author: <input id="author"><br>
@@ -98,7 +100,7 @@
             <h2>Loan a new book</h2>
             Customer ID: <input id="loan_cust_id"><br>
             Book ID: <input id="loan_book_id"><br>
-            <button onclick="newLoan()">Add New Loan</button>
+            <button onclick="newLoan()" id="loanBtn">Add New Loan</button>
             <div id="BooksSection">
                 <h2>Search Books</h2>
                 <input type="text" id="searchBookInput" placeholder="Enter book name">
@@ -137,6 +139,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="script.js"></script>
 
     <!-- Add footer -->

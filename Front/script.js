@@ -66,7 +66,6 @@ const createLoanDiv = (loan) => {
   loanDiv.innerHTML = `
     <p>Loan ID: ${loan.id}, Customer ID: ${loan.cust_id}, Book ID: ${loan.book_id}, Loan Date: ${loan.loanDate}, Return Date: ${loan.returnDate}</p>
     <button onclick="deleteLoan(${loan.id})">Return</button>
-    <button onclick="updateLoan(${loan.id})">Update</button>
   `;
   return loanDiv;
 };
@@ -171,7 +170,6 @@ const newLoan = async () => {
   // Fetch book data from the server
   const bookResponse = await axios.get(`${MY_SERVER}/books/${bookId}`);
   const bookType = bookResponse.data.book_type;
-  
 
   const newLoanData = {
     cust_id: custId,
@@ -179,8 +177,30 @@ const newLoan = async () => {
     book_type: bookType
   };
 
-  await axios.post(`${MY_SERVER}/loans/new`, newLoanData);
-  loadData();
+  try {
+    const response = await axios.post(`${MY_SERVER}/loans/new`, newLoanData);
+    if (response.status === 200) {
+      // Loan record created successfully
+      loadData();
+    } else {
+      // Handle other response status codes as needed
+      Toastify({
+        duration: 3000,
+        gravity: "top",
+        position: "center",
+        backgroundColor: "red"
+      }).showToast();
+    }
+  } catch (error) {
+    // Handle error responses from the server
+    Toastify({
+      text: error.response.data.error,
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "red"
+    }).showToast();
+  }
 };
 
 const deleteBook = async (id) => {
@@ -189,10 +209,30 @@ const deleteBook = async (id) => {
 };
 
 const deleteCustomer = async (id) => {
-  await axios.delete(`${MY_SERVER}/customers/del/${id}`);
+  try {
+    await axios.delete(`${MY_SERVER}/customers/del/${id}`);
+
+    Toastify({
+      text: 'Customer deleted successfully.',
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "green"
+    }).showToast();
+
+  } catch (error) {
+    // Handle error responses from the server
+    Toastify({
+      text: error.response.data.error,
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "red"
+    }).showToast();
+  }
+
   loadData();
 };
-
 const deleteLoan = async (id) => {
   await axios.delete(`${MY_SERVER}/loans/del/${id}`);
   loadData();
@@ -203,37 +243,34 @@ const updateBook = async (id) => {
     const bookName = document.getElementById('book_name').value;
     const bookYear = document.getElementById('book_year').value;
     const bookType = document.getElementById('book_type').value;
-    if (author === '') {
-      alert('Author name cannot be empty.');
-      return;
-    }
-  
-    if (!/^[A-Za-z]+$/.test(author)) {
-      alert('Author name should only contain letters.');
-      return;
-    }
-  
-    // Validate book_name
-    if (bookName === '') {
-      alert('Book name cannot be empty.');
-      return;
-    }
-  
-    if (!/^[A-Za-z]+$/.test(bookName)) {
-      alert('Book name should only contain letters.');
-      return;
-    }
-  
-    // Validate book_year
-    if (bookYear === '') {
-      alert('Book year cannot be empty.');
-      return;
-    }
-  
-    if (isNaN(bookYear) || bookYear.length >= 5) {
-      alert('Invalid book year. Year should be a 4-digit number.');
-      return;
-    }
+    // Validate book_author
+  if (author === '') {
+    alert('Author name cannot be empty.');
+    return;
+  }
+
+  if (!/^[A-Za-z\s.]+$/.test(author)) {
+    alert('Author name should only contain letters, spaces, dots, and symbols.');
+    return;
+  }
+
+  // Validate book_name
+  if (bookName === '') {
+    alert('Book name cannot be empty.');
+    return;
+  }
+
+  // Validate book_year
+  if (bookYear === '') {
+    alert('Book year cannot be empty.');
+    return;
+  }
+
+  if (isNaN(bookYear) || bookYear.length >= 5) {
+    alert('Invalid book year.');
+    return;
+  }
+
   
     const updatedBookData = {
       book_author: author,
@@ -257,10 +294,10 @@ const updateBook = async (id) => {
     return;
   }
 
-  if (!/^[A-Za-z]+$/.test(custName)) {
-    alert('Customer name should only contain letters.');
+  if (!/^[A-Za-z\s.'\-_]+$/.test(custName)) {
+    alert('Customer name should only contain letters, spaces, dots, apostrophes, dashes, and underscores.');
     return;
-  }
+}
 
   // Validate cust_city
   if (custCity === '') {
@@ -268,7 +305,7 @@ const updateBook = async (id) => {
     return;
   }
 
-  if (!/^[A-Za-z]+$/.test(custCity)) {
+  if (!/^[A-Za-z\s.'\-_]+$/.test(custCity)) {
     alert('Customer city should only contain letters.');
     return;
   }
@@ -291,41 +328,6 @@ const updateBook = async (id) => {
     };
   
     await axios.put(`${MY_SERVER}/customers/upd/${id}`, updatedCustomerData);
-    loadData();
-  };
-  
-  const updateLoan = async (id) => {
-    const custId = document.getElementById('loan_cust_id').value;
-    const bookId = document.getElementById('loan_book_id').value;
-    const bookType = document.getElementById('loan_book_type').value;
-  
-    let loanDate, returnDate;
-  
-    if (bookType === '1') {
-      returnDate = new Date();
-      returnDate.setDate(returnDate.getDate() + 2);
-    } else if (bookType === '2') {
-      returnDate = new Date();
-      returnDate.setDate(returnDate.getDate() + 5);
-    } else if (bookType === '3') {
-      returnDate = new Date();
-      returnDate.setDate(returnDate.getDate() + 10);
-    } else {
-      console.log('Invalid book type.');
-      return;
-    }
-  
-    loanDate = new Date(); // Set loanDate to current date
-  
-    const updatedLoanData = {
-      cust_id: custId,
-      book_id: bookId,
-      book_type: bookType,
-      loanDate: loanDate.toISOString().split('T')[0],
-      returnDate: returnDate.toISOString().split('T')[0]
-    };
-  
-    await axios.put(`${MY_SERVER}/loans/upd/${id}`, updatedLoanData);
     loadData();
   };
   
