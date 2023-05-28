@@ -83,19 +83,14 @@ const newBook = async () => {
     return;
   }
 
-  if (!/^[A-Za-z]+$/.test(author)) {
-    alert('Author name should only contain letters.');
+  if (!/^[A-Za-z\s.]+$/.test(author)) {
+    alert('Author name should only contain letters, spaces, dots, and symbols.');
     return;
   }
 
   // Validate book_name
   if (bookName === '') {
     alert('Book name cannot be empty.');
-    return;
-  }
-
-  if (!/^[A-Za-z]+$/.test(bookName)) {
-    alert('Book name should only contain letters.');
     return;
   }
 
@@ -106,7 +101,7 @@ const newBook = async () => {
   }
 
   if (isNaN(bookYear) || bookYear.length >= 5) {
-    alert('Invalid book year. Year should be a 4-digit number.');
+    alert('Invalid book year.');
     return;
   }
 
@@ -143,10 +138,10 @@ const newCustomer = async () => {
     return;
   }
 
-  if (!/^[A-Za-z]+$/.test(custCity)) {
-    alert('Customer city should only contain letters.');
+  if (!/^[A-Za-z,-. ]+$/.test(custCity)) {
+    alert('Customer city should only contain letters, hyphens (-), commas (,), periods (.) and spaces.');
     return;
-  }
+}
 
   // Validate cust_age
   if (custAge === '') {
@@ -176,6 +171,7 @@ const newLoan = async () => {
   // Fetch book data from the server
   const bookResponse = await axios.get(`${MY_SERVER}/books/${bookId}`);
   const bookType = bookResponse.data.book_type;
+  
 
   const newLoanData = {
     cust_id: custId,

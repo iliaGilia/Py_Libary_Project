@@ -4,90 +4,28 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta, date
 from sqlalchemy import func
+from books import db, Book, Customer, Loan
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///books.sqlite3'
 app.config['SECRET_KEY'] = "random string"
 CORS(app)
 
-db = SQLAlchemy(app)
+db.init_app(app)
 
-# Model
-class Book(db.Model):
-    id = db.Column('id', db.Integer, primary_key=True)
-    book_name = db.Column(db.String(100))
-    book_author = db.Column(db.String(50))
-    book_year = db.Column(db.String(10))
-    book_type = db.Column(db.String(200))
-    loans = db.relationship('Loan', backref='book', cascade='all, delete')
-
-    def __init__(self, book_name, book_author, book_year, book_type):
-        self.book_name = book_name
-        self.book_author = book_author
-        self.book_year = book_year
-        self.book_type = book_type
-
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'book_name': self.book_name,
-            'book_author': self.book_author,
-            'book_year': self.book_year,
-            'book_type': self.book_type
-        }
-
-class Customer(db.Model):
-    id = db.Column('id', db.Integer, primary_key=True)
-    cust_name = db.Column(db.String(100))
-    cust_city = db.Column(db.String(50))
-    cust_age = db.Column(db.Integer)
-    loans = db.relationship('Loan', backref='customer', cascade='all, delete')
-
-    def __init__(self, cust_name, cust_city, cust_age):
-        self.cust_name = cust_name
-        self.cust_city = cust_city
-        self.cust_age = cust_age
-
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'cust_name': self.cust_name,
-            'cust_city': self.cust_city,
-            'cust_age': self.cust_age
-        }
-
-class Loan(db.Model):
-    id = db.Column('id', db.Integer, primary_key=True)
-    cust_id = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=False)
-    book_id = db.Column(db.Integer, db.ForeignKey('book.id'), nullable=False)
-    loanDate = db.Column(db.String(20))
-    returnDate = db.Column(db.String(20))
-
-    def __init__(self, cust_id, book_id, loanDate, returnDate):
-        self.cust_id = cust_id
-        self.book_id = book_id
-        self.loanDate = loanDate
-        self.returnDate = returnDate
-
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'cust_id': self.cust_id,
-            'book_id': self.book_id,
-            'loanDate': self.loanDate,
-            'returnDate': self.returnDate
-        }
-
+# home page
 @app.route('/')
 def index():
     return render_template('index.html')
 
+# get all books
 @app.route("/books", methods=['GET'])
 def get_books():
     books_list = [book.to_dict() for book in Book.query.all()]
     json_data = json.dumps(books_list)
     return json_data
 
+# get a single book by its ID
 @app.route("/books/<int:book_id>", methods=['GET'])
 def get_book(book_id):
     book = Book.query.get(book_id)
@@ -96,18 +34,21 @@ def get_book(book_id):
 
     return book.to_dict()
 
+# get all customers
 @app.route("/customers", methods=['GET'])
 def get_customers():
     customers_list = [customer.to_dict() for customer in Customer.query.all()]
     json_data = json.dumps(customers_list)
     return json_data
 
+# get all loans
 @app.route("/loans", methods=['GET'])
 def get_loans():
     loans_list = [loan.to_dict() for loan in Loan.query.all()]
     json_data = json.dumps(loans_list)
     return json_data
 
+# delete a book by its ID
 @app.route("/books/del/<id>", methods=['DELETE'])
 def del_book(id=-1):
     book = Book.query.get_or_404(id)
@@ -115,6 +56,7 @@ def del_book(id=-1):
     db.session.commit()
     return {"delete": "success"}
 
+# delete a customer by their ID
 @app.route("/customers/del/<id>", methods=['DELETE'])
 def del_customer(id=-1):
     customer = Customer.query.get_or_404(id)
@@ -122,6 +64,7 @@ def del_customer(id=-1):
     db.session.commit()
     return {"delete": "success"}
 
+# delete a loan by its ID
 @app.route("/loans/del/<id>", methods=['DELETE'])
 def del_loan(id=-1):
     loan = Loan.query.get_or_404(id)
@@ -129,6 +72,7 @@ def del_loan(id=-1):
     db.session.commit()
     return {"delete": "success"}
 
+# update a book by its ID
 @app.route("/books/upd/<id>", methods=['PUT'])
 def upd_book(id=-1):
     book = Book.query.get(id)
@@ -140,6 +84,7 @@ def upd_book(id=-1):
     db.session.commit()
     return {"update": "success"}
 
+# update a customer by their ID
 @app.route("/customers/upd/<id>", methods=['PUT'])
 def upd_customer(id=-1):
     customer = Customer.query.get(id)
@@ -150,6 +95,7 @@ def upd_customer(id=-1):
     db.session.commit()
     return {"update": "success"}
 
+# update a loan by its ID
 @app.route("/loans/upd/<id>", methods=['PUT'])
 def upd_loan(id=-1):
     loan = Loan.query.get(id)
@@ -161,6 +107,7 @@ def upd_loan(id=-1):
     db.session.commit()
     return {"update": "success"}
 
+# create a new book record
 @app.route('/books/new', methods=['POST'])
 def new_book():
     data = request.get_json()
@@ -174,7 +121,7 @@ def new_book():
     db.session.commit()
     return "A new book record was created."
 
-
+# create a new customer record
 @app.route('/customers/new', methods=['POST'])
 def new_customer():
     data = request.get_json()
@@ -187,6 +134,7 @@ def new_customer():
     db.session.commit()
     return "A new customer record was created."
 
+# create a new loan record
 @app.route('/loans/new', methods=['POST'])
 def new_loan():
     data = request.get_json()
@@ -204,6 +152,11 @@ def new_loan():
     if customer is None:
         return {'error': 'Invalid customer ID'}, 400
 
+    # Check if the book is already loaned
+    loaned_book = Loan.query.filter_by(book_id=book_id).filter(Loan.returnDate >= datetime.now().strftime('%Y-%m-%d')).first()
+    if loaned_book is not None:
+        return {'error': 'The book is already loaned'}, 400
+
     # Perform loan creation
     loanDate = datetime.now().strftime('%Y-%m-%d')
     if book_type == '1':
@@ -220,6 +173,7 @@ def new_loan():
     db.session.commit()
     return "A new loan record was created."
 
+# search for books by book name or author
 @app.route('/books/search/<string:query>', methods=['GET'])
 def search_books(query):
     # Convert the query to lowercase and add wildcards
@@ -228,6 +182,7 @@ def search_books(query):
     json_data = json.dumps(books_list)
     return json_data
 
+# search for customers by name
 @app.route("/customers/search/<string:query>", methods=['GET'])
 def search_customers(query):
     # Convert the query to lowercase and add wildcards
@@ -236,6 +191,7 @@ def search_customers(query):
     json_data = json.dumps(customers_list)
     return json_data
 
+# get all overdue books based on return date
 @app.route('/books-overdue', methods=['GET'])
 def get_books_overdue():
     today = date.today().strftime('%Y-%m-%d')
