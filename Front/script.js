@@ -78,29 +78,59 @@ const newBook = async () => {
 
   // Validate book_author
   if (author === '') {
-    alert('Author name cannot be empty.');
+    Toastify({
+      text: "Please enter author name.",
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "red"
+    }).showToast();
     return;
   }
 
-  if (!/^[A-Za-z\s.]+$/.test(author)) {
-    alert('Author name should only contain letters, spaces, dots, and symbols.');
+  if (!/^[A-Za-z\s."]+$/.test(author)) {
+    Toastify({
+      text: "Author name should only contain letters, spaces, dots, and symbols.",
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "red"
+    }).showToast();
     return;
   }
 
   // Validate book_name
   if (bookName === '') {
-    alert('Book name cannot be empty.');
+    Toastify({
+      text: "Please enter book name.",
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "red"
+    }).showToast();
     return;
   }
 
   // Validate book_year
   if (bookYear === '') {
-    alert('Book year cannot be empty.');
+    Toastify({
+      text: "Please enter the year of publication.",
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "red"
+    }).showToast();
     return;
   }
 
   if (isNaN(bookYear) || bookYear.length >= 5) {
-    alert('Invalid book year.');
+    Toastify({
+      text: "Invalid publication year.",
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "red"
+    }).showToast();
     return;
   }
 
@@ -115,6 +145,7 @@ const newBook = async () => {
   loadData();
 };
 
+// New customer
 const newCustomer = async () => {
   const custName = document.getElementById('cust_name').value;
   const custCity = document.getElementById('cust_city').value;
@@ -122,34 +153,70 @@ const newCustomer = async () => {
 
   // Validate cust_name
   if (custName === '') {
-    alert('Customer name cannot be empty.');
+    Toastify({
+      text: "Please enter the customer's name.",
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "red"
+    }).showToast();
     return;
   }
 
-  if (!/^[A-Za-z]+$/.test(custName)) {
-    alert('Customer name should only contain letters.');
+  if (!/^[A-Za-z\s]+$/.test(custName)) {
+    Toastify({
+      text: "Please enter a valid name.",
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "red"
+    }).showToast();
     return;
   }
 
   // Validate cust_city
   if (custCity === '') {
-    alert('Customer city cannot be empty.');
+    Toastify({
+      text: "Please enter a city name.",
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "red"
+    }).showToast();
     return;
   }
 
-  if (!/^[A-Za-z,-. ]+$/.test(custCity)) {
-    alert('Customer city should only contain letters, hyphens (-), commas (,), periods (.) and spaces.');
+  if (!/^[A-Za-z,-." ]+$/.test(custCity)) {
+    Toastify({
+      text: 'Please enter valid city name.',
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "red"
+    }).showToast();
     return;
 }
 
   // Validate cust_age
   if (custAge === '') {
-    alert('Customer age cannot be empty.');
+    Toastify({
+      text: "Please enter customer's age.",
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "red"
+    }).showToast();
     return;
   }
 
-  if (isNaN(custAge) || custAge < 0 || custAge >= 100) {
-    alert('Invalid customer age. Age should be a number less than 100.');
+  if (isNaN(custAge) || custAge <= 3 || custAge >= 120) {
+    Toastify({
+      text: 'Invalid customer age, must be over three years old.',
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "red"
+    }).showToast();
     return;
   }
 
@@ -163,6 +230,7 @@ const newCustomer = async () => {
   loadData();
 };
 
+// New loan
 const newLoan = async () => {
   const custId = document.getElementById('loan_cust_id').value;
   const bookId = document.getElementById('loan_book_id').value;
@@ -182,15 +250,8 @@ const newLoan = async () => {
     if (response.status === 200) {
       // Loan record created successfully
       loadData();
-    } else {
-      // Handle other response status codes as needed
-      Toastify({
-        duration: 3000,
-        gravity: "top",
-        position: "center",
-        backgroundColor: "red"
-      }).showToast();
-    }
+    } 
+
   } catch (error) {
     // Handle error responses from the server
     Toastify({
@@ -203,6 +264,7 @@ const newLoan = async () => {
   }
 };
 
+// Delete Book
 const deleteBook = async (id) => {
   await axios.delete(`${MY_SERVER}/books/del/${id}`);
   loadData();
@@ -211,14 +273,6 @@ const deleteBook = async (id) => {
 const deleteCustomer = async (id) => {
   try {
     await axios.delete(`${MY_SERVER}/customers/del/${id}`);
-
-    Toastify({
-      text: 'Customer deleted successfully.',
-      duration: 3000,
-      gravity: "top",
-      position: "center",
-      backgroundColor: "green"
-    }).showToast();
 
   } catch (error) {
     // Handle error responses from the server
@@ -245,29 +299,59 @@ const updateBook = async (id) => {
     const bookType = document.getElementById('book_type').value;
     // Validate book_author
   if (author === '') {
-    alert('Author name cannot be empty.');
+    Toastify({
+      text: "Please enter author's name.",
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "red"
+    }).showToast();
     return;
   }
 
-  if (!/^[A-Za-z\s.]+$/.test(author)) {
-    alert('Author name should only contain letters, spaces, dots, and symbols.');
+  if (!/^[A-Za-z\s."]+$/.test(author)) {
+    Toastify({
+      text: "Please enter valid author name.",
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "red"
+    }).showToast();
     return;
   }
 
   // Validate book_name
   if (bookName === '') {
-    alert('Book name cannot be empty.');
+    Toastify({
+      text: "Please enter book name.",
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "red"
+    }).showToast();
     return;
   }
 
   // Validate book_year
   if (bookYear === '') {
-    alert('Book year cannot be empty.');
+    Toastify({
+      text: "Please enter book year.",
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "red"
+    }).showToast();
     return;
   }
 
   if (isNaN(bookYear) || bookYear.length >= 5) {
-    alert('Invalid book year.');
+    Toastify({
+      text: "Invalid book year.",
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "red"
+    }).showToast();
     return;
   }
 
@@ -290,34 +374,70 @@ const updateBook = async (id) => {
 
     // Validate cust_name
   if (custName === '') {
-    alert('Customer name cannot be empty.');
+    Toastify({
+      text: "Please enter customer's name.",
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "red"
+    }).showToast();
     return;
   }
 
-  if (!/^[A-Za-z\s.'\-_]+$/.test(custName)) {
-    alert('Customer name should only contain letters, spaces, dots, apostrophes, dashes, and underscores.');
+  if (!/^[A-Za-z\s.' ]+$/.test(custName)) {
+    Toastify({
+      text: "Please enter valid customer name.",
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "red"
+    }).showToast();
     return;
 }
 
   // Validate cust_city
   if (custCity === '') {
-    alert('Customer city cannot be empty.');
+    Toastify({
+      text: "Please enter city's name.",
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "red"
+    }).showToast();
     return;
   }
 
-  if (!/^[A-Za-z\s.'\-_]+$/.test(custCity)) {
-    alert('Customer city should only contain letters.');
+  if (!/^[A-Za-z\s.'"]+$/.test(custCity)) {
+    Toastify({
+      text: "Please enter valid city name.",
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "red"
+    }).showToast();
     return;
   }
 
   // Validate cust_age
   if (custAge === '') {
-    alert('Customer age cannot be empty.');
+    Toastify({
+      text: "Please enter customer's age.",
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "red"
+    }).showToast();
     return;
   }
 
-  if (isNaN(custAge) || custAge < 0 || custAge >= 100) {
-    alert('Invalid customer age. Age should be a number less than 100.');
+  if (isNaN(custAge) || custAge < 0 || custAge >= 120) {
+    Toastify({
+      text: "Invalid customer age, must be over three years old.",
+      duration: 3000,
+      gravity: "top",
+      position: "center",
+      backgroundColor: "red"
+    }).showToast();
     return;
   }
   

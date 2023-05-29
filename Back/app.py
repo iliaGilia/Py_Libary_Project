@@ -63,7 +63,7 @@ def del_customer(id=-1):
 
     # check if the customer has any loans
     if customer.loans:
-        return {"error": "Cannot delete customer. They have books loaned."}, 400
+        return {"error": "Cannot delete customer, since they have books loaned."}, 400
 
     # if the customer has no loans, delete them
     db.session.delete(customer)
@@ -136,15 +136,14 @@ def new_loan():
     book_id = data['book_id']
     book_type = str(data['book_type'])
 
-    # Check if the book exists
+    # Check if the book and customer exists
     book = Book.query.get(book_id)
-    if book is None:
-        return {'error': 'Invalid book ID'}, 400
-
-    # Check if the customer exists
     customer = Customer.query.get(cust_id)
     if customer is None:
-        return {'error': 'Invalid customer ID'}, 400
+        return {'error': 'Invalid ID'}, 400
+    elif book is None: 
+        return {'error': 'Invalid ID'}, 400
+    
 
     # Check if the book is already loaned
     loaned_book = Loan.query.filter_by(book_id=book_id).first()
