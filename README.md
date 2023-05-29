@@ -16,11 +16,11 @@ This will start the Flask development server on port 5000. You can then access t
 
 The application includes the following features:
 
-Add, view, update, and delete book records.
-Add, view, update, and delete customer records.
-Add, view, and delete loan records.
-Search for books and customers by name.
-View a list of overdue books with their return dates.
-The system uses SQLite as its database backend. When you first start the application, it will create a new database file called books.sqlite3.
+-Add, view, update, and delete book records.
+-Add, view, update, and delete customer records.
+-Add, view, and delete loan records.
+-Search for books and customers by name.
+-View a list of overdue books with their return dates.
+-The system uses SQLite as its database backend. When you first start the application, it will create a new database file called books.sqlite3.
 
 This project has provided a basic structure which can be expanded upon to create a more advanced library system.
