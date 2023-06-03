@@ -4,9 +4,9 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta, date
 from sqlalchemy import func
-from books import db, Book, Customer, Loan
+from books_app import db, Book, Customer, Loan
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='Front/templates')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///books.sqlite3'
 app.config['SECRET_KEY'] = "random string"
 CORS(app)
