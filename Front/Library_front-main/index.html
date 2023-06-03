@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management System</title>
+    <!-- Add Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<!--     <link rel="stylesheet" type="text/css" href="https://pylibraryback.onrender.com/styles.css"> -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+    <style>
+/* Adjust spacing */
+.container {
+    display: flex;
+    margin-top: 30px;
+  padding-top: 80px; /* adjust this value according to the height of your navbar */      
+}
+
+
+.left-section {
+    flex: 1;
+}
+
+.right-section {
+    flex: 1;
+}
+
+.show-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 24%;
+}
+
+#overdue-books-container {
+    position: absolute;
+    top: 80px;
+     right: 0;
+    width: 300px;
+    padding: 10px;
+}
+button {
+padding: 10px 20px;
+font-size: 16px;
+margin-top: 10px;
+background-color: #a64c2b;
+border-color: #be471c;
+color: #fff;
+border-radius: 5px;
+cursor: pointer;
+}
+
+button:hover {
+background-color: #7e1d1d;
+border-color: #7e1d1d;
+color: #fff;
+}
+
+input[type="text"], select {
+padding: 10px;
+font-size: 16px;
+border-radius: 5px;
+border: 1px solid #ccc;
+margin-top: 5px;
+width: 100%;
+}
+
+input[type="text"]:focus, select:focus {
+outline: none;
+box-shadow: 0 0 5px #007bff;
+border-color: #007bff;
+}
+.backImageCard{
+background: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.9)), url('https://cdn.discordapp.com/attachments/232538205583441920/1113123069716865154/old-paper-texture-background-free-photo.jpg') no-repeat center center;
+background-size: cover;
+color:rgb(95, 197, 240)
+}
+nav {
+background: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.9)), url('https://cdn.discordapp.com/attachments/232538205583441920/1113123069716865154/old-paper-texture-background-free-photo.jpg') no-repeat center center;
+background-size: cover;
+color: #fff;
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 20px;
+}
+.background-image {
+    background-image:linear-gradient(to bottom, rgba(84, 25, 25, 0.7), rgba(126, 118, 118, 0.9)), url('https://cdn.discordapp.com/attachments/232538205583441920/1113123069716865154/old-paper-texture-background-free-photo.jpg') /* Replace 'your-image-url' with the URL of your background image */;
+    background-size: cover;
+    background-position: center center;
+    position: relative;
+  }
+
+nav a {
+color: #fff;
+text-decoration: none;
+font-size: 18px;
+margin: 0 10px;
+}
+
+nav a:hover {
+text-decoration: underline;
+}
+footer {
+background-color: #333;
+color: #fff;
+padding: 50px 0;
+}
+
+.container {
+max-width: 960px;
+margin: 0 auto;
+}
+
+.footer-content {
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+gap: 50px;
+}
+
+.footer-about,
+.footer-links,
+.footer-subscribe {
+flex-basis: 33%;
+text-align: center;
+}
+
+.footer-about p {
+margin-top: 20px;
+font-size: 16px;
+line-height: 24px;
+}
+
+.footer-links ul {
+list-style: none;
+margin: 0;
+padding: 0;
+}
+
+.footer-links li {
+margin-bottom: 10px;
+}
+
+.footer-links a {
+color: #fff;
+text-decoration: none;
+}
+
+.footer-links a:hover {
+text-decoration: underline;
+}
+
+.footer-subscribe input[type="email"] {
+width: 100%;
+margin-bottom: 10px;
+border: none;
+padding: 10px;
+font-size: 16px;
+}
+
+.footer-subscribe button {
+border: none;
+background-color: #fff;
+color: #333;
+padding: 10px 20px;
+font-size: 16px;
+cursor: pointer;
+}
+
+.footer-subscribe button:hover {
+background-color: #ddd;
+}
+
+.footer-bottom {
+text-align: center;
+margin-top: 50px;
+}
+footer {
+background: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.9)), url('https://cdn.discordapp.com/attachments/232538205583441920/1113123069716865154/old-paper-texture-background-free-photo.jpg') no-repeat center center;
+background-size: cover;
+color: #fff;
+padding: 50px 0;
+}
+
+.scrollable-content {
+    height: 475px; /* set the maximum height you want the content to be displayed */
+    overflow-y: auto;
+  }
+
+.card-height {
+    height: 600px;
+  }  
+    </style>
+    
+</head>
+
+<body class='background-image' style="color:aliceblue">
+    <!-- Add Bootstrap navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <a class="navbar-brand" href="#">Library Management System</a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <button class="button button:hover mx-2" onclick="showBooks()">Show Books Data</button>
+          </li>
+          <li class="nav-item">
+            <button class="button button:hover mx-2" onclick="showCustomers()">Show Customers Data</button>
+          </li>
+          <li class="nav-item">
+            <button class="button button:hover mx-2" onclick="showLoans()">Show Loans Data</button>
+          </li>
+          <li class="nav-item">
+            <button class="button button:hover mx-2" id="show-overdue-books-btn">Show Overdue Books</button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="card mb-4 backImageCard">
+            <div class="card-body">
+              <h1>Books</h1>
+              <hr />
+              <form>
+                <div class="form-group row">
+                  <label for="author" class="col-sm-3 col-form-label">Author</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" id="author" style="width: 100%;">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="book_name" class="col-sm-3 col-form-label">Name</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" id="book_name" style="width: 100%;">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="book_year" class="col-sm-3 col-form-label">Year</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" id="book_year" style="width: 100%;">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="book_type" class="col-sm-3 col-form-label">Book Type</label>
+                  <div class="col-sm-9 ">
+                    <select class="form-control" id="book_type" style="width: 100%;">
+                      <option value="1">Type 1</option>
+                      <option value="2">Type 2</option>
+                      <option value="3">Type 3</option>
+                    </select>
+                  </div>
+                </div>
+                <button type="button" class="button button:hover" onclick="newBook()">Add New Book</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 ">
+          <div class="card mb-4 backImageCard">
+            <div class="card-body ">
+              <h1>Customers</h1>
+              <hr />
+              <form>
+                <div class="form-group row">
+                  <label for="cust_name" class="col-sm-3 col-form-label">Name</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" id="cust_name" style="width: 100%;">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="cust_city" class="col-sm-3 col-form-label">City</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" id="cust_city" style="width: 100%;">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="cust_age" class="col-sm-3 col-form-label">Age</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" id="cust_age" style="width: 100%;">
+                  </div>
+                </div>
+                <button type="button" class="button button:hover" onclick="newCustomer()">Add New Customer</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card mb-4 backImageCard">
+            <div class="card-body">
+              <h1>Loans</h1>
+              <hr />
+              <form>
+                <div class="form-group row">
+                  <label for="loan_cust_id" class="col-sm-3 col-form-label">Customer ID</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" id="loan_cust_id" style="width: 100%;">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="loan_book_id" class="col-sm-3 col-form-label">Book ID</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" id="loan_book_id" style="width: 100%;">
+                  </div>
+                </div>
+                <button type="button" class="button button:hover" onclick="newLoan()" id="loanBtn">Add New Loan</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card mb-4 backImageCard ">
+            <div class="card-body">
+              <div id="BooksSection">
+                <div id="BooksSection">
+                  <h2>Search Books</h2>
+                  <input type="text" id="searchBookInput" placeholder="Enter book name">
+                  <button onclick="searchBooks()">Search</button>
+                  <div id="bookSearchResults"></div>
+                  <div id="Books" style="display: none;"></div>
+              </div>
+              <hr>
+              <div id="CustomersSection">
+                <h2>Search Customers</h2>
+                <input type="text" id="searchCustomerInput" placeholder="Enter customer name">
+                <button onclick="searchCustomers()">Search</button>
+                <div id="customerSearchResults"></div>
+                <div id="Customers" style="display: none;"></div>
+              </div>
+                </div>
+              </div>
+            </div>
+            <div class="card mb-4 card-height backImageCard">
+              <div class="card-body">
+                <h1>Show Data</h1>
+                <hr />
+                  <div class="scrollable-content">
+                    <div class="right-section">
+                      <div id="DataDisplay"></div>
+                      <div id="BooksSection">
+                        <div id="Books" style="display: none;"></div>
+                      </div>
+                      <div id="CustomersSection">
+                        <div id="Customers" style="display: none;"></div>
+                      </div>
+                      <div id="LoansSection">
+                        <div id="Loans" style="display: none;"></div>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+                </div>
+               </div>
+              </div>
+            </div>
+          </div>
+          
+      
+
+          
+    <!-- Add Bootstrap JS and custom script -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="script.js"></script>
+
+    <!-- Add footer -->
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-about">
+            <h3>About Us</h3>
+            <p>We are a team of developers passionate about helping others learn programming.</p>
+          </div>
+          <div class="footer-links">
+            <h3>Useful Links</h3>
+            <ul>
+              <li><a href="https://www.steimatzky.co.il">Real Book Store</a></li>
+              <li><a href="https://www.kotar-rishon-lezion.org.il">Real Library</a></li>
+            </ul>
+          </div>
+          <div class="footer-subscribe">
+            <h3>Subscribe</h3>
+            <form>
+              <input type="email" placeholder="Your Email Address">
+              <button type="submit">Subscribe</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </footer>
+</body>
+
+</html>
